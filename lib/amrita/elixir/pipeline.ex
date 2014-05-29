@@ -57,6 +57,13 @@ defmodule Amrita.Elixir.Pipeline do
     end
   end
 
+  # Comparing Enum.into's
+  defp pipeline_op(left, {{ :., _, [{ :__aliases__, _, [:Enum]}, :into]}, _, _ }=right) do
+    quote do
+      unquote(left) |> Amrita.Checkers.Simple.equals unquote(right)
+    end
+  end
+
   defp pipeline_op(left, { call, line, args }) when is_list(args) do
     { call, line, [left|args] }
   end
